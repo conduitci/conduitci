@@ -9,4 +9,6 @@ defmodule ConduitWeb.LayoutView do
       nil
     end
   end
+
+  def git, do: Application.fetch_env!(:conduit, :git)
 end
