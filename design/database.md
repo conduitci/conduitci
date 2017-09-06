@@ -36,8 +36,9 @@
 | Field name | Data type | Extra
 | --- | --- | ---
 | id | integer | `primary_key`
-| name | string
-| value | text
+| name | string |
+| value | text |
+| secret | boolean | `DEFAULT FALSE`
 | inserted\_at | datetime |
 | updated\_at | datetime |
 
