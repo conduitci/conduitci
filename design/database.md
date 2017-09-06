@@ -28,7 +28,7 @@
 | --- | --- | ---
 | id | integer | `primary_key`
 | type | string | `enum: {git|file|...}`
-| url | string | `{git://...|file://source_pipeline/release.tar.gz}`
+| metadata | JSONB |
 | inserted\_at | datetime |
 | updated\_at | datetime |
 
