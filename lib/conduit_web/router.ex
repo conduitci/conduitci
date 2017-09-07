@@ -17,6 +17,8 @@ defmodule ConduitWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    resources "/pipelines", PipelineController
+    resources "/pipeline_groups", PipelineGroupController
   end
 
   # Other scopes may use custom stacks.

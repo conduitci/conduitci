@@ -1,0 +1,12 @@
+<h2>Show Pipeline</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @pipeline.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: pipeline_path(@conn, :edit, @pipeline) %></span>

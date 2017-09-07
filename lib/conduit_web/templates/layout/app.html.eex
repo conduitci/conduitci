@@ -24,8 +24,11 @@
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item<%#= active_class(@conn, pipeline_path(@conn, :index))%>">
-            <a class="nav-link" href="<%#= pipeline_path(@conn, :index) %>">Pipelines</a>
+          <li class="nav-item<%= active_class(@conn, pipeline_path(@conn, :index))%>">
+            <a class="nav-link" href="<%= pipeline_path(@conn, :index) %>">Pipelines</a>
+          </li>
+          <li class="nav-item<%= active_class(@conn, pipeline_group_path(@conn, :index))%>">
+            <a class="nav-link" href="<%= pipeline_group_path(@conn, :index) %>">Pipeline Groups</a>
           </li>
           <li class="nav-item<%#= active_class(@conn, template_path(@conn, :index))%>">
             <a class="nav-link" href="<%#= template_path(@conn, :index) %>">Templates</a>

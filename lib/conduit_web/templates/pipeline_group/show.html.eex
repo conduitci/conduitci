@@ -1,0 +1,12 @@
+<h2>Show Pipeline group</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @pipeline_group.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: pipeline_group_path(@conn, :edit, @pipeline_group) %></span>
