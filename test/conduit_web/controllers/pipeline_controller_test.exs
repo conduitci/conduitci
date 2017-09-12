@@ -3,19 +3,29 @@ defmodule ConduitWeb.PipelineControllerTest do
 
   alias Conduit.Workspace
 
-  @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
+  @create_attrs %{name: "pipeline name"}
+  @update_attrs %{name: "updated pipeline name"}
   @invalid_attrs %{name: nil}
+  
+  @valid_pipeline_group_attrs %{name: "pipeline group name"}
 
   def fixture(:pipeline) do
-    {:ok, pipeline} = Workspace.create_pipeline(@create_attrs)
+    {:ok, pipeline} = @create_attrs
+      |> Enum.into(%{pipeline_group_id: fixture(:pipeline_group).id})
+      |> Workspace.create_pipeline()
     pipeline
+  end
+
+  def fixture(:pipeline_group) do
+    {:ok, pipeline_group} = Workspace.create_pipeline_group(@valid_pipeline_group_attrs)
+    
+    pipeline_group
   end
 
   describe "index" do
     test "lists all pipelines", %{conn: conn} do
       conn = get conn, pipeline_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Pipelines"
+      assert html_response(conn, 200) =~ "Pipelines"
     end
   end
 
@@ -28,7 +38,11 @@ defmodule ConduitWeb.PipelineControllerTest do
 
   describe "create pipeline" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, pipeline_path(conn, :create), pipeline: @create_attrs
+      pipeline_group_id = fixture(:pipeline_group).id
+      pipeline_attrs = @create_attrs
+        |> Enum.into(%{pipeline_group_id: pipeline_group_id})
+
+      conn = post conn, pipeline_path(conn, :create), pipeline: pipeline_attrs
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == pipeline_path(conn, :show, id)
@@ -60,7 +74,7 @@ defmodule ConduitWeb.PipelineControllerTest do
       assert redirected_to(conn) == pipeline_path(conn, :show, pipeline)
 
       conn = get conn, pipeline_path(conn, :show, pipeline)
-      assert html_response(conn, 200) =~ "some updated name"
+      assert html_response(conn, 200) =~ @update_attrs.name
     end
 
     test "renders errors when data is invalid", %{conn: conn, pipeline: pipeline} do

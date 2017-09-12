@@ -15,7 +15,7 @@ defmodule ConduitWeb.PipelineController do
       conn,
       "new.html",
       changeset: changeset,
-      pipeline_groups: Enum.map(Workspace.list_pipeline_groups, &{&1.name, &1.id})
+      pipeline_groups: pipeline_groups_option_list(),
     )
   end
 
@@ -30,7 +30,7 @@ defmodule ConduitWeb.PipelineController do
           conn,
           "new.html",
           changeset: changeset,
-          pipeline_groups: Enum.map(Workspace.list_pipeline_groups, &{&1.name, &1.id})
+          pipeline_groups: pipeline_groups_option_list(),
         )
     end
   end
@@ -41,7 +41,7 @@ defmodule ConduitWeb.PipelineController do
       conn,
       "show.html",
       pipeline: pipeline,
-      pipeline_groups: Enum.map(Workspace.list_pipeline_groups, &{&1.name, &1.id})
+      pipeline_groups: pipeline_groups_option_list(),
     )
   end
 
@@ -53,7 +53,7 @@ defmodule ConduitWeb.PipelineController do
       "edit.html",
       pipeline: pipeline,
       changeset: changeset,
-      pipeline_groups: Enum.map(Workspace.list_pipeline_groups, &{&1.name, &1.id})
+      pipeline_groups: pipeline_groups_option_list(),
     )
   end
 
@@ -66,9 +66,21 @@ defmodule ConduitWeb.PipelineController do
         |> put_flash(:info, "Pipeline updated successfully.")
         |> redirect(to: pipeline_path(conn, :show, pipeline))
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", pipeline: pipeline, changeset: changeset)
+        render(
+          conn,
+          "edit.html",
+          pipeline: pipeline,
+          changeset: changeset,
+          pipeline_groups: pipeline_groups_option_list(),
+        )
     end
   end
+
+  defp pipeline_groups_option_list do
+    Workspace.list_pipeline_groups
+    |> Enum.map(&{&1.name, &1.id})
+  end
+
 
   def delete(conn, %{"id" => id}) do
     pipeline = Workspace.get_pipeline!(id)

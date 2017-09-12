@@ -18,10 +18,9 @@
       f,
       :pipeline_group_id,
       @pipeline_groups,
-      selected: @pipeline_groups |> List.first() |> elem(1),
       class: "form-control")
     %>
-    <%= error_tag f, :name %>
+    <%= error_tag f, :pipeline_group_id %>
   </div>
 
   <div class="form-group">

@@ -3,21 +3,35 @@ defmodule Conduit.WorkspaceTest do
 
   alias Conduit.Workspace
 
+  @valid_pipeline_attrs %{name: "pipeline name"}
+  @update_pipeline_attrs %{name: "updated pipeline name"}
+  @invalid_pipeline_attrs %{name: nil}
+
+  @valid_pipeline_group_attrs %{name: "pipeline group name"}
+  @update_pipeline_group_attrs %{name: "updated pipeline group name"}
+  @invalid_pipeline_group_attrs %{name: nil}
+  
+  def pipeline_group_fixture(attrs \\ %{}) do
+    {:ok, pipeline_group} =
+      attrs
+      |> Enum.into(@valid_pipeline_group_attrs)
+      |> Workspace.create_pipeline_group()
+
+    pipeline_group
+  end
+
+  def pipeline_fixture(attrs \\ %{}) do
+    {:ok, pipeline} =
+      attrs
+      |> Enum.into(@valid_pipeline_attrs)
+      |> Enum.into(%{pipeline_group_id: pipeline_group_fixture().id})
+      |> Workspace.create_pipeline()
+
+    pipeline
+  end
+
   describe "pipeline_groups" do
     alias Conduit.Workspace.PipelineGroup
-
-    @valid_attrs %{name: "some name"}
-    @update_attrs %{name: "some updated name"}
-    @invalid_attrs %{name: nil}
-
-    def pipeline_group_fixture(attrs \\ %{}) do
-      {:ok, pipeline_group} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Workspace.create_pipeline_group()
-
-      pipeline_group
-    end
 
     test "list_pipeline_groups/0 returns all pipeline_groups" do
       pipeline_group = pipeline_group_fixture()
@@ -30,24 +44,24 @@ defmodule Conduit.WorkspaceTest do
     end
 
     test "create_pipeline_group/1 with valid data creates a pipeline_group" do
-      assert {:ok, %PipelineGroup{} = pipeline_group} = Workspace.create_pipeline_group(@valid_attrs)
-      assert pipeline_group.name == "some name"
+      assert {:ok, %PipelineGroup{} = pipeline_group} = Workspace.create_pipeline_group(@valid_pipeline_group_attrs)
+      assert pipeline_group.name == @valid_pipeline_group_attrs.name
     end
 
     test "create_pipeline_group/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Workspace.create_pipeline_group(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Workspace.create_pipeline_group(@invalid_pipeline_group_attrs)
     end
 
     test "update_pipeline_group/2 with valid data updates the pipeline_group" do
       pipeline_group = pipeline_group_fixture()
-      assert {:ok, pipeline_group} = Workspace.update_pipeline_group(pipeline_group, @update_attrs)
+      assert {:ok, pipeline_group} = Workspace.update_pipeline_group(pipeline_group, @update_pipeline_group_attrs)
       assert %PipelineGroup{} = pipeline_group
-      assert pipeline_group.name == "some updated name"
+      assert pipeline_group.name == @update_pipeline_group_attrs.name
     end
 
     test "update_pipeline_group/2 with invalid data returns error changeset" do
       pipeline_group = pipeline_group_fixture()
-      assert {:error, %Ecto.Changeset{}} = Workspace.update_pipeline_group(pipeline_group, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Workspace.update_pipeline_group(pipeline_group, @invalid_pipeline_group_attrs)
       assert pipeline_group == Workspace.get_pipeline_group!(pipeline_group.id)
     end
 
@@ -66,19 +80,6 @@ defmodule Conduit.WorkspaceTest do
   describe "pipelines" do
     alias Conduit.Workspace.Pipeline
 
-    @valid_attrs %{name: "some name"}
-    @update_attrs %{name: "some updated name"}
-    @invalid_attrs %{name: nil}
-
-    def pipeline_fixture(attrs \\ %{}) do
-      {:ok, pipeline} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Workspace.create_pipeline()
-
-      pipeline
-    end
-
     test "list_pipelines/0 returns all pipelines" do
       pipeline = pipeline_fixture()
       assert Workspace.list_pipelines() == [pipeline]
@@ -90,24 +91,26 @@ defmodule Conduit.WorkspaceTest do
     end
 
     test "create_pipeline/1 with valid data creates a pipeline" do
-      assert {:ok, %Pipeline{} = pipeline} = Workspace.create_pipeline(@valid_attrs)
-      assert pipeline.name == "some name"
+      assert {:ok, %Pipeline{} = pipeline} = @valid_pipeline_attrs
+        |> Enum.into(%{pipeline_group_id: pipeline_group_fixture().id})
+        |> Workspace.create_pipeline()
+      assert pipeline.name == @valid_pipeline_attrs.name
     end
 
     test "create_pipeline/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Workspace.create_pipeline(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Workspace.create_pipeline(@invalid_pipeline_attrs)
     end
 
     test "update_pipeline/2 with valid data updates the pipeline" do
       pipeline = pipeline_fixture()
-      assert {:ok, pipeline} = Workspace.update_pipeline(pipeline, @update_attrs)
+      assert {:ok, pipeline} = Workspace.update_pipeline(pipeline, @update_pipeline_attrs)
       assert %Pipeline{} = pipeline
-      assert pipeline.name == "some updated name"
+      assert pipeline.name == @update_pipeline_attrs.name
     end
 
     test "update_pipeline/2 with invalid data returns error changeset" do
       pipeline = pipeline_fixture()
-      assert {:error, %Ecto.Changeset{}} = Workspace.update_pipeline(pipeline, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Workspace.update_pipeline(pipeline, @invalid_pipeline_attrs)
       assert pipeline == Workspace.get_pipeline!(pipeline.id)
     end
 

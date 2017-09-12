@@ -6,6 +6,7 @@ defmodule Conduit.Workspace.PipelineGroup do
 
   schema "pipeline_groups" do
     field :name, :string
+    has_many :pipelines, Conduit.Workspace.Pipeline
 
     timestamps()
   end

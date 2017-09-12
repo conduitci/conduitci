@@ -15,6 +15,5 @@ defmodule Conduit.Workspace.Pipeline do
     pipeline
     |> cast(attrs, [:name, :pipeline_group_id])
     |> validate_required([:name, :pipeline_group_id])
-    |> cast_assoc(:pipeline_group, required: true)
   end
 end
