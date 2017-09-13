@@ -16,6 +16,8 @@ defmodule ConduitWeb.Router do
   scope "/", ConduitWeb do
     pipe_through :browser # Use the default browser stack
 
+    get "/status", StatusController, :index
+    get "/status/migrate", StatusController, :migrate
     get "/", PageController, :index
     resources "/pipelines", PipelineController
     resources "/pipeline_groups", PipelineGroupController
