@@ -20,7 +20,7 @@ spec:
         - name: conduit-dockerhub
       containers:
         - name: conduit
-          image: conduit-ci/core:$GIT_COMMIT
+          image: conduitci/core:$GIT_COMMIT
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
