@@ -1,0 +1,25 @@
+<h2>Pipeline groups</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for pipeline_group <- @pipeline_groups do %>
+    <tr>
+      <td><%= pipeline_group.name %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: pipeline_group_path(@conn, :show, pipeline_group), class: "btn btn-secondary btn-sm" %></span>
+        <span><%= link "Edit", to: pipeline_group_path(@conn, :edit, pipeline_group), class: "btn btn-secondary btn-sm" %></span>
+        <span><%= link "Delete", to: pipeline_group_path(@conn, :delete, pipeline_group), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Pipeline group", to: pipeline_group_path(@conn, :new), class: "btn btn-primary" %></span>
