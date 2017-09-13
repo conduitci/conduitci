@@ -56,6 +56,9 @@ metadata:
   name: conduit
   annotations:
     kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: conduit-basic-auth
+    ingress.kubernetes.io/auth-realm: "Authentication Required"
 spec:
   tls:
     - secretName: conduit-tls
