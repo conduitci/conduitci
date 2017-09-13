@@ -2,7 +2,7 @@
 FROM alpine:3.5
 
 # Elixir/Erlang dev (project specific)
-RUN apk --no-cache add \
+RUN apk --no-cache --update add \
   build-base \
   ca-certificates \
   erlang \
@@ -22,6 +22,7 @@ RUN apk --no-cache add \
   make \
   nodejs \
   openssh-client \
+  python \
   wget
 
 # Elixir
@@ -55,7 +56,7 @@ RUN MIX_ENV=prod mix compile && \
     npm install && \
     ./node_modules/brunch/bin/brunch build -p \
   ) && \
-  MIX_ENV=prod mix do phoenix.digest, release --env=prod
+  MIX_ENV=prod mix do phx.digest, release --env=prod
 
 RUN mkdir /release && \
   tar -xvf /app/_build/prod/rel/conduit/releases/0.0.1/conduit.tar.gz -C /release
@@ -74,6 +75,7 @@ CMD ["/app/bin/conduit", "foreground"]
 
 # Install other stable dependencies that don't change often
 # Compile app
-RUN mkdir /app && apk add --update --no-cache ncurses-libs
+# Distillery 1.5 requires bash (?)
+RUN mkdir /app && apk add --update --no-cache bash ncurses-libs
 
 COPY --from=0 /release /app/

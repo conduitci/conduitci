@@ -21,6 +21,14 @@ config :conduit, ConduitWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :conduit, ConduitWeb.Endpoint,
+  secret_key_base: Config.get_env("SECRET_KEY_BASE")
+
+# Configure your database
+config :conduit, Conduit.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  url: Config.get_env("DATABASE_URL")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
@@ -51,7 +59,7 @@ config :logger, level: :info
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
-#     config :phoenix, :serve_endpoints, true
+config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
@@ -59,6 +67,3 @@ config :logger, level: :info
 #     config :conduit, ConduitWeb.Endpoint, server: true
 #
 
-# Finally import the config/prod.secret.exs
-# which should be versioned separately.
-import_config "prod.secret.exs"
