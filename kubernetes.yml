@@ -17,7 +17,7 @@ spec:
         app: conduit
     spec:
       imagePullSecrets:
-        - name: dockerhub
+        - name: conduit-dockerhub
       containers:
         - name: conduit
           image: conduit-ci/core:$GIT_COMMIT
