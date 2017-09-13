@@ -5,6 +5,15 @@
 # is restricted to this project.
 use Mix.Config
 
+defmodule Config do
+  def get_env(env, default \\ nil) do
+    case Mix.env do
+      :prod -> "${#{env}}"
+      _ -> System.get_env(env) || default
+    end
+  end
+end
+
 # General application configuration
 config :conduit,
   ecto_repos: [Conduit.Repo]
@@ -21,6 +30,24 @@ config :conduit, ConduitWeb.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+git_branch =
+  Config.get_env("GIT_COMMIT") ||
+    System.cmd("git", ~w(rev-parse --abbrev-ref HEAD))
+    |> elem(0)
+    |> String.trim
+
+git_commit =
+  Config.get_env("GIT_COMMIT") ||
+    System.cmd("git", ~w(rev-parse HEAD))
+    |> elem(0)
+    |> String.trim
+
+config :conduit,
+  git: %{
+    commit: git_commit,
+    branch: git_branch
+  }
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
