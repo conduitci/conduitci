@@ -1,0 +1,71 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app: conduit
+  name: conduit
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: conduit
+  template:
+    metadata:
+      labels:
+        app: conduit
+    spec:
+      imagePullSecrets:
+        - name: dockerhub
+      containers:
+        - name: conduit
+          image: conduit-ci/core:$GIT_COMMIT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: database_url
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: conduit
+  name: conduit
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: conduit
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: conduit
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - secretName: conduit-tls
+      hosts:
+        - conduit.dedizone.net
+  rules:
+    - host: conduit.dedizone.net
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: conduit
+            servicePort: 80
