@@ -49,6 +49,9 @@ COPY mix.exs mix.lock ./
 RUN MIX_ENV=prod mix deps.get
 COPY . .
 
+ARG GIT_COMMIT="<git-commit>"
+ARG GIT_BRANCH="<git-branch>"
+
 # Compile and package for release, allow replace environment vars with REPLACE_OS_VARS
 RUN MIX_ENV=prod mix compile && \
   (\
