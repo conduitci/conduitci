@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: conduit
                   key: database_url
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: conduit
+                  key: secret_key_base
 ---
 kind: Service
 apiVersion: v1
