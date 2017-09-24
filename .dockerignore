@@ -1,0 +1,7 @@
+_build
+.git
+assets/node_modules
+deps
+Dockerfile
+Jenkinsfile
+kubernetes.yml

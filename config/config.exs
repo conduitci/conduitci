@@ -32,13 +32,13 @@ config :logger, :console,
   metadata: [:request_id]
 
 git_branch =
-  Config.get_env("GIT_COMMIT") ||
+  System.get_env("GIT_COMMIT") ||
     System.cmd("git", ~w(rev-parse --abbrev-ref HEAD))
     |> elem(0)
     |> String.trim
 
 git_commit =
-  Config.get_env("GIT_COMMIT") ||
+  System.get_env("GIT_COMMIT") ||
     System.cmd("git", ~w(rev-parse HEAD))
     |> elem(0)
     |> String.trim
